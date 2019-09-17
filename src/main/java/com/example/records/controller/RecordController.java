@@ -1,63 +1,54 @@
 package com.example.records.controller;
 
-import com.example.records.model.Person;
+import com.example.records.model.Record;
+import com.example.records.model.RecordDTO;
 import com.example.records.service.RecordsService;
-import io.swagger.annotations.ApiOperation;
-import javax.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/v1/record")
-@Slf4j
-public class RecordController {
+@Controller
+public class PageController {
 
   private RecordsService recordsService;
 
   @Autowired
-  public RecordController(RecordsService recordsService){
+  public PageController(RecordsService recordsService) {
     this.recordsService = recordsService;
   }
 
-  @ApiOperation(value = "Add a new record", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity addRecord(@RequestBody @Valid Person person, BindingResult result){
-    try {
-//      if (result.hasErrors()){
-//        List<CustomError> errors = buildValidationResponse(result);
-//        return ResponseEntity.unprocessableEntity().body(errors);
-//      }
-      recordsService.addRecord(person);
-      return ResponseEntity.ok().build();
-    } catch (Exception e){
-      log.error("Error adding record: ", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+  @GetMapping(value = "")
+  public String getHomepage() {
+    return "index";
+  }
+
+  @GetMapping(value = "/add-record")
+  public String getAddRecordPage(Model model) {
+    model.addAttribute("record", new RecordDTO());
+    return "add-record";
+  }
+
+  @PostMapping(value = "/add-record")
+  public String saveStudent(@ModelAttribute("record") RecordDTO recordDTO, BindingResult errors,
+      Model model) {
+    if (recordsService.addedRecord(recordDTO)) {
+      return getListRecordsPage(model);
     }
+    return "error";
   }
 
-  @ApiOperation(value = "Get all person records", produces = MediaType.APPLICATION_JSON_VALUE)
-  @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity listRecords(){
-    return recordsService.listRecords();
+  @GetMapping(value = "/list-records")
+  public String getListRecordsPage(Model model) {
+    model.addAttribute("records", recordsService.listRecords());
+    return "list-records";
   }
-
-//  private List<CustomError> buildValidationResponse(BindingResult result) {
-//    List<CustomError> errorList = result.getAllErrors().stream()
-//        .map(e -> new CustomError((e instanceof FieldError?((FieldError)e).getField():""), e.getDefaultMessage()))
-//        .filter(e -> !e.getField().isEmpty())
-//        .collect(Collectors.toList());
-//    ValidationErrorSortingService.sortErrors(errorList);
-//    return errorList;
-//  }
 
 }
-
