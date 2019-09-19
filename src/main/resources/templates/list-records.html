@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List all records</title>
+</head>
+<body>
+<table border="1" style="width:100%">
+    <thead>
+    <tr>
+        <th> Name</th>
+        <th> PPSN</th>
+        <th> Date of Birth</th>
+        <th> Phone</th>
+        <th> Date Created</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${records.empty}">
+        <td colspan="5" style="text-align:center"> No records have been created</td>
+    </tr>
+    <tr th:each="record : ${records}">
+        <td style="text-align:center"><span th:text="${record.name}"> Name </span></td>
+        <td style="text-align:center"><span th:text="${record.ppsn}"> PPSN </span></td>
+        <td style="text-align:center"><span th:text="${record.dateOfBirth}"> Date of Birth </span>
+        </td>
+        <td style="text-align:center"><span th:text="${record.phone}"> Phone </span></td>
+        <td style="text-align:center"><span th:text="${record.createDate}"> Date Created </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
