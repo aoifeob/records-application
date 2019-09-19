@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RecordsService {
+public class RecordService {
 
   private RecordRepository recordRepository;
   private RecordFactory recordFactory;
 
   @Autowired
-  public RecordsService(RecordRepository recordRepository,
+  public RecordService(RecordRepository recordRepository,
       RecordFactory recordFactory) {
     this.recordRepository = recordRepository;
     this.recordFactory = recordFactory;

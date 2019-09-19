@@ -1,6 +1,6 @@
 package com.example.records.service;
 
-import com.example.records.model.Person;
+import com.example.records.model.Record;
 import java.sql.Timestamp;
 import java.time.Instant;
 import javax.persistence.PrePersist;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 public class PersistenceService {
 
   @PrePersist
-  void preCreate (Person person) {
+  void preCreate(Record record) {
     Timestamp now = Timestamp.from(Instant.now());
-    person.setCreateDate(now);
+    record.setCreateDate(now);
   }
 
 }

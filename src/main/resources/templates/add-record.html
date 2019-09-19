@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add a record</title>
 </head>
 <body>
+<form action="#" method="post" th:action="@{/add-record}" th:object="${record}">
+    <table>
+        <tr>
+            <td>Name: <input th:field="*{name}" type="text"/></td>
+            <td th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></td>
+        </tr>
+        <tr>
+            <td>PPSN: <input th:field="*{ppsn}" type="text"/></td>
+            <td th:errors="*{ppsn}" th:if="${#fields.hasErrors('ppsn')}"></td>
+        </tr>
+        <tr>
+            <td>Date of Birth: <input th:field="*{dateOfBirth}" type="date"/></td>
+            <td th:errors="*{dateOfBirth}" th:if="${#fields.hasErrors('dateOfBirth')}"></td>
+        </tr>
+        <tr>
+            <td>Phone: <input th:field="*{phone}" type="text"/></td>
+            <td th:errors="*{phone}" th:if="${#fields.hasErrors('phone')}"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit"/></td>
+        </tr>
+    </table>
+</form>
 
 </body>
 </html>

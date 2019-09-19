@@ -1,32 +1,30 @@
 package com.example.records.controller;
 
-import com.example.records.model.Record;
 import com.example.records.model.RecordDTO;
-import com.example.records.service.RecordsService;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import com.example.records.service.RecordService;
+import javax.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class PageController {
+@Slf4j
+public class RecordController {
 
-  private RecordsService recordsService;
+  private RecordService recordService;
 
   @Autowired
-  public PageController(RecordsService recordsService) {
-    this.recordsService = recordsService;
+  public RecordController(RecordService recordService) {
+    this.recordService = recordService;
   }
 
   @GetMapping(value = "")
-  public String getHomepage() {
+  public String getIndexPage() {
     return "index";
   }
 
@@ -37,17 +35,23 @@ public class PageController {
   }
 
   @PostMapping(value = "/add-record")
-  public String saveStudent(@ModelAttribute("record") RecordDTO recordDTO, BindingResult errors,
+  public String addRecord(@ModelAttribute("record") @Valid RecordDTO recordDTO,
+      BindingResult bindingResult,
       Model model) {
-    if (recordsService.addedRecord(recordDTO)) {
-      return getListRecordsPage(model);
+    if (bindingResult.hasErrors()) {
+      return "add-record";
     }
-    return "error";
+    try {
+      recordService.addRecord(recordDTO);
+    } catch (Exception e) {
+      log.error("Error adding record ", e);
+    }
+    return getListRecordsPage(model);
   }
 
   @GetMapping(value = "/list-records")
   public String getListRecordsPage(Model model) {
-    model.addAttribute("records", recordsService.listRecords());
+    model.addAttribute("records", recordService.listRecords());
     return "list-records";
   }
 
